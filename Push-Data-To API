@@ -1,0 +1,31 @@
+
+import requests, csv, json
+import pandas as pd
+API_ENDPOINT = "http://xx.xxx.xx.xxx:xxx/band-width-form"
+csvfilename = "data.txt"
+
+#Read CSV and and add data to a dictionary
+data = {}
+
+def Data_listToDict(lst):
+    op = {lst[i].split('=')[0].lstrip(): lst[i].split('=')[1] for i in range(0, len(lst))}
+    data['bq-Tab'] = 'datag'
+    data['band'] = op
+    return data
+
+# open csv file
+with open(csvfilename, 'rb') as csvfile:
+
+    reader = csv.reader(csvfile, delimiter=',')
+    included_cols = [1, 3, 6, 7, 8, 9, 11, 12]
+
+    for row in reader:
+            content = list(row[i] for i in included_cols)
+            print content
+            print(Data_listToDict(content))
+            data = Data_listToDict(content)
+            r = requests.post(url=API_ENDPOINT, json=data)
+            # extracting response text
+            pastebin_url = r.text
+            print("The pastebin URL is:%s" % pastebin_url)
+
